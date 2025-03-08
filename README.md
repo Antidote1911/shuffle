@@ -1,0 +1,2 @@
+# shuffle
+Rust password generator
