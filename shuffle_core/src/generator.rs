@@ -1,5 +1,7 @@
 use crate::*;
-use rand::{rng, seq::SliceRandom, Rng};
+use rand::{seq::SliceRandom, Rng, SeedableRng};
+use rand_hc::Hc128Rng;
+use rand_isaac::Isaac64Rng;
 use std::collections::HashSet;
 
 /// Generate a password
@@ -15,7 +17,9 @@ use std::collections::HashSet;
 /// assert_eq!(password.len(), 32);
 /// ```
 pub fn generate_password(config: &PasswordConfig) -> String {
-    let mut rng = rng();
+    let mut isaac_seeder = Isaac64Rng::from_os_rng();
+    let mut rng = Hc128Rng::from_rng(&mut isaac_seeder);
+
     let mut charset = String::new();
     let mut password = Vec::with_capacity(config.length.into());
 

@@ -13,6 +13,9 @@ license = "MIT"
 
 [dependencies]
 rand = "0.9"
+rand_seeder = "0.4.0"
+rand_isaac = "0.4.0"
+rand_hc = "0.4.0"
 
 [lib]
 name="shuffle_core"
