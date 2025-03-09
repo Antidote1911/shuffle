@@ -3,6 +3,7 @@ resolver = "2"
 
 members = [
 	"shuffle_core",
+	"cppadapter",
 	"shuffle_cli",
 	"shuffle_gui"
 ]

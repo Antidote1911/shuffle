@@ -5,6 +5,11 @@ pub mod generator;
 pub use config::PasswordConfig;
 pub use generator::generate_password;
 
+pub const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
+pub const fn getversion() -> &'static str {
+    APP_VERSION
+}
+
 /// Character sets for password generation
 pub struct CharacterSets {
     /// Lowercase letters: a-z
