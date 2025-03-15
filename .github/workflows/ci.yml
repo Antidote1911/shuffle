@@ -3,7 +3,6 @@ on: [pull_request, push]
 env:
   CARGO_INCREMENTAL: 0
   CARGO_TERM_COLOR: always
-  RUSTFLAGS: -C debuginfo=0 -D warnings
 jobs:
   test:
     name: Test
