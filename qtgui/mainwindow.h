@@ -18,6 +18,7 @@ public:
 private slots:
     void onGenerateClick();
     void onCopyClick();
+    void passwordLengthChanged(int length);
 
 private:
     Ui::MainWindow *ui;

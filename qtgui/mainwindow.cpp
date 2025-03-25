@@ -14,15 +14,17 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->lb_status->setVisible(false);
-    ui->cb_psnumbers->setChecked(true);
-    ui->cb_psuppercase->setChecked(true);
+    ui->pushNumbers->setChecked(true);
+    ui->pushUpper->setChecked(true);
     onGenerateClick();
 
     connect(ui->btn_generate, &QPushButton::clicked, this, &MainWindow::onGenerateClick);
     connect(ui->btn_copy, &QPushButton::clicked, this, &MainWindow::onCopyClick);
     connect(ui->optionsButtons, &QButtonGroup::buttonClicked, this, &MainWindow::onGenerateClick);
     connect(ui->horizontalSlider, &QSlider::sliderMoved, this, &MainWindow::onGenerateClick);
+
+    connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), SLOT(passwordLengthChanged(int)));
+    connect(ui->spinBox, SIGNAL(valueChanged(int)), SLOT(passwordLengthChanged(int)));
 
 
 }
@@ -32,26 +34,38 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::passwordLengthChanged(int length)
+{
+    ui->spinBox->blockSignals(true);
+    ui->horizontalSlider->blockSignals(true);
+
+    ui->spinBox->setValue(length);
+    ui->horizontalSlider->setValue(length);
+
+    ui->spinBox->blockSignals(false);
+    ui->horizontalSlider->blockSignals(false);
+
+    onGenerateClick();
+}
+
 void MainWindow::onGenerateClick()
 {
     const int  pwdLen = ui->horizontalSlider->sliderPosition();
-    const bool lowerCase = ui->cb_pslowercase->isChecked();
-    const bool upperCase = ui->cb_psuppercase->isChecked();
-    const bool symbols = ui->cb_pssymbols->isChecked();
-    const bool numbers = ui->cb_psnumbers->isChecked();
+    const bool lowerCase = ui->pushLower->isChecked();
+    const bool upperCase = ui->pushUpper->isChecked();
+    const bool symbols = ui->pushSymbols->isChecked();
+    const bool numbers = ui->pushNumbers->isChecked();
 
     if (!lowerCase && !upperCase && !symbols && !numbers)
     {
         ui->btn_generate->setDisabled(true);
         ui->horizontalSlider->setDisabled(true);
-        ui->lb_status->setText("Select one or more groups");
-        ui->lb_status->setVisible(true);
+        ui->statusbar->showMessage("Select one or more groups",2000);
         ui->btn_copy->setDisabled(true);
 
     }else{
         ui->btn_generate->setDisabled(false);
         ui->horizontalSlider->setDisabled(false);
-        ui->lb_status->setVisible(false);
         ui->btn_copy->setDisabled(false);
         auto test = get_random(pwdLen,upperCase,lowerCase,numbers,symbols);
         ui->passwordEdit->clear();
@@ -67,13 +81,7 @@ void MainWindow::onCopyClick()
     if (pwd.length() >= 8)
     {
         QGuiApplication::clipboard()->setText(pwd);
-        //show the label "copied to clipboard" for 2 seconds
-        if (!ui->lb_status->isVisible())
-        {
-            ui->lb_status->setText("Password Copied to Clipboard");
-            ui->lb_status->setVisible(true);
-            QTimer::singleShot(2000, this, [this](){ ui->lb_status->setVisible(false); });
-        }
+        ui->statusbar->showMessage("Password Copied to Clipboard",2000);
     }
 }
 
