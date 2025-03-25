@@ -56,6 +56,15 @@ void MainWindow::onGenerateClick()
     const bool symbols = ui->pushSymbols->isChecked();
     const bool numbers = ui->pushNumbers->isChecked();
 
+    const char* testavoid = "";
+    if (ui->checkAvoidLookLike->isChecked())
+{
+     testavoid="0Oo1Iil";
+}
+
+
+
+
     if (!lowerCase && !upperCase && !symbols && !numbers)
     {
         ui->btn_generate->setDisabled(true);
@@ -67,7 +76,7 @@ void MainWindow::onGenerateClick()
         ui->btn_generate->setDisabled(false);
         ui->horizontalSlider->setDisabled(false);
         ui->btn_copy->setDisabled(false);
-        auto test = get_random(pwdLen,upperCase,lowerCase,numbers,symbols);
+        auto test = get_random(pwdLen,upperCase,lowerCase,numbers,symbols,testavoid);
         ui->passwordEdit->clear();
         ui->passwordEdit->setText(test);
     }

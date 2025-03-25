@@ -96,6 +96,7 @@
             <pointsize>11</pointsize>
             <italic>false</italic>
             <bold>false</bold>
+            <strikeout>false</strikeout>
            </font>
           </property>
           <property name="alignment">
@@ -270,6 +271,13 @@
      </layout>
     </item>
     <item>
+     <widget class="QCheckBox" name="checkAvoidLookLike">
+      <property name="text">
+       <string>Avoid Look Like</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <spacer name="verticalSpacer_2">
       <property name="orientation">
        <enum>Qt::Orientation::Vertical</enum>
@@ -290,7 +298,7 @@
      <x>0</x>
      <y>0</y>
      <width>638</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>

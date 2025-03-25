@@ -10,7 +10,8 @@ extern "C" char* get_random(int length,
                             bool uppercase,
                             bool lowwercase,
                             bool digits,
-                            bool symbols);
+                            bool symbols,
+                            const char* avoid);
 
 
 
