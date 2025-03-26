@@ -19,15 +19,30 @@ pub struct Cli {
     pub(crate) lowercase: bool,
 
     /// Use digits [0-9]
-    #[clap(short, long)]
+    #[clap(short, long, default_value = "true")]
     pub(crate) digits: bool,
 
     /// Use special symbols [*&^%$#@!~]
     #[clap(short, long)]
-    pub(crate) symbols: bool,
+    pub(crate) braces: bool,
+
+    #[clap(short, long)]
+    pub(crate) punctuation: bool,
+
+    #[clap(short, long)]
+    pub(crate) quotes: bool,
+
+    #[clap(long)]
+    pub(crate) dashes: bool,
+
+    #[clap(short, long)]
+    pub(crate) math: bool,
+
+    #[clap(long)]
+    pub(crate) logograms: bool,
 
     /// Sets the required password length
-    #[clap(short = 'L', long, value_name = "NUMBER", default_value = "20")]
+    #[clap(short = 'L', long, value_name = "NUMBER", default_value = "5")]
     length: usize,
 
     /// Output in a txt file
@@ -37,6 +52,10 @@ pub struct Cli {
     /// Exclude char
     #[clap(long)]
     exclude: Option<String>,
+
+    /// include char
+    #[clap(long)]
+    include: Option<String>,
 
 }
 
@@ -52,6 +71,10 @@ impl Cli {
 
     pub fn exclude(&self) -> Option<String> {
         self.exclude.clone()
+    }
+
+    pub fn include(&self) -> Option<String> {
+        self.include.clone()
     }
 }
 

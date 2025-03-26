@@ -17,6 +17,7 @@ public:
 
 private slots:
     void onGenerateClick();
+    void onLookClick();
     void onCopyClick();
     void passwordLengthChanged(int length);
 

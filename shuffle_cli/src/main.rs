@@ -1,9 +1,12 @@
+extern crate core;
+
 use crate::cli::Cli;
 
 use clap::Parser;
 use shuffle_core::*;
 use std::{fs::File, io::LineWriter, io::Write};
 use color_eyre::eyre::{eyre, Result};
+
 use question::{Answer, Question};
 
 pub mod cli;
@@ -22,22 +25,37 @@ fn run() -> Result<()> {
 
     let opts: Cli = Cli::parse();
 
-    let total_true = [opts.uppercase, opts.lowercase, opts.digits, opts.symbols].into_iter().filter(|b| *b).count();
+    let total_true = [
+        opts.lowercase,
+        opts.uppercase,
+        opts.digits,
+        opts.braces,
+        opts.punctuation,
+        opts.quotes,
+        opts.dashes,
+        opts.math,
+        opts.logograms
+    ].into_iter().filter(|b| *b).count();
+
     if opts.length()<total_true || opts.length()==0{
         return Err(eyre!("Password length must be greater or equal to the number of selected group chars."));
     }
 
-    let mut config = PasswordConfig::new(opts.length())?
-        .with_uppercase(opts.uppercase)
+    let config = PasswordConfig::new(opts.length())?
         .with_lowercase(opts.lowercase)
+        .with_uppercase(opts.uppercase)
         .with_digits(opts.digits)
-        .with_symbols(opts.symbols)
-        .avoid_ambiguous(opts.exclude().unwrap_or("".to_string()));
+        .with_braces(opts.braces)
+        .with_punctuation(opts.punctuation)
+        .with_quotes(opts.quotes)
+        .with_dashes(opts.dashes)
+        .with_math(opts.math)
+        .with_logograms(opts.logograms)
+        .excluded(opts.exclude().unwrap_or("".to_string()))
+        .included(opts.include().unwrap_or("@".to_string()));
 
     if !config.validate().is_ok(){
-        config = Default::default();
-        config.length = opts.length();
-        config.avoid_ambiguous = opts.exclude().unwrap_or("".to_string());
+        return Err(eyre!("Invalid configuration. Please enter some options to generate a password"));
     }
 
     let password = generate_password(&config);

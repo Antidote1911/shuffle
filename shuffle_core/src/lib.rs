@@ -18,8 +18,19 @@ pub struct CharacterSets {
     pub uppercase: &'static str,
     /// Numeric digits: 0-9
     pub digits: &'static str,
-    /// Special characters
-    pub symbols: &'static str,
+    /// Braces: ()[]{}
+    pub braces: &'static str,
+    /// Punctuation: .,:;
+    pub punctuation: &'static str,
+    /// Quotes: "'
+    pub quotes: &'static str,
+    /// Dashes: -/\_|
+    pub dashes: &'static str,
+    /// Math: !*+<=>?
+    pub math: &'static str,
+    /// Logograms: #$%&@^`~
+    pub logograms: &'static str,
+
 }
 
 /// Default character sets for password generation
@@ -27,7 +38,12 @@ pub const DEFAULT_CHARSETS: CharacterSets = CharacterSets {
     lowercase: "abcdefghijklmnopqrstuvwxyz",
     uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
     digits: "0123456789",
-    symbols: "!@#$%&.-_*",
+    braces: "()[]{}",
+    punctuation: ".,:;",
+    quotes: "\"'",
+    dashes: "-/\\_|",
+    math: "!*+<=>?",
+    logograms: "#$%&@^`~",
 };
 
 

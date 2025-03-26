@@ -6,12 +6,19 @@
 
 // rust functions
 extern "C" char* get_version();
+
 extern "C" char* get_random(int length,
                             bool uppercase,
-                            bool lowwercase,
-                            bool digits,
-                            bool symbols,
-                            const char* avoid);
+                            bool lowercase,
+                            bool numbers,
+                            bool braces,
+                            bool punctuation,
+                            bool quotes,
+                            bool dashes,
+                            bool math,
+                            bool logograms,
+                            const char* avoid,
+                            const char* also);
 
 
 

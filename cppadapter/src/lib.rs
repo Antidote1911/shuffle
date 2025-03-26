@@ -8,13 +8,31 @@ pub extern "C" fn get_version() -> *mut c_char {
 }
 
 #[no_mangle]
-pub extern "C" fn get_random(length: u8,uppercase: bool,lowercase:bool,digits:bool,symbols:bool,avoid: *mut c_char,) -> *mut c_char {
+pub extern "C" fn get_random(length: u8,
+                             uppercase: bool,
+                             lowercase:bool,
+                             digits:bool,
+                             braces:bool,
+                             punctuation:bool,
+                             quotes:bool,
+                             dashes:bool,
+                             math:bool,
+                             logograms:bool,
+                             avoid: *mut c_char,
+                             also: *mut c_char) -> *mut c_char {
+
     let config = PasswordConfig::new(length as usize).unwrap()
         .with_uppercase(uppercase)
         .with_lowercase(lowercase)
         .with_digits(digits)
-        .with_symbols(symbols)
-        .avoid_ambiguous(c_to_rust_string(avoid).unwrap());
+        .with_braces(braces)
+        .with_punctuation(punctuation)
+        .with_quotes(quotes)
+        .with_dashes(dashes)
+        .with_math(math)
+        .with_logograms(logograms)
+        .excluded(c_to_rust_string(avoid).unwrap())
+        .included(c_to_rust_string(also).unwrap());
 
     let password = generate_password(&config);
     rust_to_c_string(password)

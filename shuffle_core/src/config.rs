@@ -51,11 +51,29 @@ pub struct PasswordConfig {
     /// Include numeric digits (0-9)
     pub include_digits: bool,
 
-    /// Include special symbols
-    pub include_symbols: bool,
+    /// Include braces: ()[]{}
+    pub include_braces: bool,
+
+    /// Include punctuation: .,:;
+    pub include_punctuation: bool,
+
+    /// Include quotes: "'
+    pub include_quotes: bool,
+
+    /// Include dashes: -/\_|
+    pub include_dashes: bool,
+
+    /// Include math: !*+<=>?
+    pub include_math: bool,
+
+    /// Include logograms: #$%&@^`~
+    pub include_logograms: bool,
 
     /// Avoid ambiguous characters (0O1Il5S)
-    pub avoid_ambiguous: String,
+    pub excluded: String,
+
+    /// Also include characters
+    pub included: String,
 }
 
 impl Default for PasswordConfig {
@@ -66,12 +84,18 @@ impl Default for PasswordConfig {
     /// - Requires at least one character from each included set
     fn default() -> Self {
         Self {
-            length: 20,
+            length: 10,
             include_lowercase: true,
             include_uppercase: true,
             include_digits: true,
-            include_symbols: false,
-            avoid_ambiguous: String::from(""),
+            include_braces: false,
+            include_punctuation: false,
+            include_quotes: false,
+            include_dashes: false,
+            include_math: false,
+            include_logograms: false,
+            excluded: String::from(""),
+            included: String::from(""),
         }
     }
 }
@@ -108,15 +132,52 @@ impl PasswordConfig {
         self
     }
 
-    /// Builder method to set whether to include symbols
-    pub const fn with_symbols(mut self, include: bool) -> Self {
-        self.include_symbols = include;
+    /// Builder method to set whether to include braces
+    pub const fn with_braces(mut self, include: bool) -> Self {
+        self.include_braces = include;
         self
     }
 
-    /// Builder method to set whether to include symbols
-    pub fn avoid_ambiguous(mut self, include: String) -> Self {
-        self.avoid_ambiguous=include;
+    /// Builder method to set whether to include punctuation
+    pub const fn with_punctuation(mut self, include: bool) -> Self {
+        self.include_punctuation = include;
+        self
+    }
+
+    /// Builder method to set whether to include quotes
+    pub const fn with_quotes(mut self, include: bool) -> Self {
+        self.include_quotes = include;
+        self
+    }
+
+    /// Builder method to set whether to include dashes
+    pub const fn with_dashes(mut self, include: bool) -> Self {
+        self.include_dashes = include;
+        self
+    }
+
+    /// Builder method to set whether to include math
+    pub const fn with_math(mut self, include: bool) -> Self {
+        self.include_math = include;
+        self
+    }
+
+    /// Builder method to set whether to include logograms
+    pub const fn with_logograms(mut self, include: bool) -> Self {
+        self.include_logograms = include;
+        self
+    }
+
+    /// Builder method to set excluded chars
+    pub fn excluded(mut self, include: String) -> Self {
+        self.excluded=include;
+        self
+
+    }
+
+    /// Builder method to set included chars
+    pub fn included(mut self, include: String) -> Self {
+        self.included=include;
         self
 
     }
@@ -130,7 +191,12 @@ impl PasswordConfig {
         let sets_count = self.include_lowercase as usize
             + self.include_uppercase as usize
             + self.include_digits as usize
-            + self.include_symbols as usize;
+            + self.include_braces as usize
+            + self.include_punctuation as usize
+            + self.include_quotes as usize
+            + self.include_dashes as usize
+            + self.include_math as usize
+            + self.include_logograms as usize;
 
         if sets_count == 0 {
             return Err(PasswordConfigError::NoCharacterSetsEnabled);
