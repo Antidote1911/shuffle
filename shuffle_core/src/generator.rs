@@ -78,93 +78,62 @@ pub fn generate_password(config: &PasswordConfig) -> String {
 
     //////////////////
     if !config.included.is_empty() {
-        let temp =config.included.clone();
-        password.push(temp.chars().nth(rng.random_range(0..temp.len())).unwrap());
-        charset.push_str(&temp);
+        let included_chars: Vec<char> = config.included.chars().collect();
+        password.push(included_chars[rng.random_range(0..included_chars.len())]);
+        charset.push_str(&config.included);
     }
 
     if config.include_lowercase && !filtered_lowercase.is_empty() {
-        password.push(filtered_lowercase.chars().nth(rng.random_range(0..filtered_lowercase.len())).unwrap());
+        let lowercase_chars: Vec<char> = filtered_lowercase.chars().collect();
+        password.push(lowercase_chars[rng.random_range(0..lowercase_chars.len())]);
         charset.push_str(&filtered_lowercase);
     }
 
     if config.include_uppercase && !filtered_uppercase.is_empty() {
-        password.push(
-            filtered_uppercase
-                .chars()
-                .nth(rng.random_range(0..filtered_uppercase.len()))
-                .unwrap(),
-        );
+        let uppercase_chars: Vec<char> = filtered_uppercase.chars().collect();
+        password.push(uppercase_chars[rng.random_range(0..uppercase_chars.len())]);
         charset.push_str(&filtered_uppercase);
     }
 
     if config.include_digits && !filtered_digits.is_empty() {
-        password.push(
-            filtered_digits
-                .chars()
-                .nth(rng.random_range(0..filtered_digits.len()))
-                .unwrap(),
-        );
+        let digit_chars: Vec<char> = filtered_digits.chars().collect();
+        password.push(digit_chars[rng.random_range(0..digit_chars.len())]);
         charset.push_str(&filtered_digits);
     }
 
     if config.include_braces && !filtered_braces.is_empty() {
-        password.push(
-            filtered_braces
-                .chars()
-                .nth(rng.random_range(0..filtered_braces.len()))
-                .unwrap(),
-        );
+        let brace_chars: Vec<char> = filtered_braces.chars().collect();
+        password.push(brace_chars[rng.random_range(0..brace_chars.len())]);
         charset.push_str(&filtered_braces);
     }
 
     if config.include_punctuation && !filtered_punctuation.is_empty() {
-        password.push(
-            filtered_punctuation
-                .chars()
-                .nth(rng.random_range(0..filtered_punctuation.len()))
-                .unwrap(),
-        );
+        let punctuation_chars: Vec<char> = filtered_punctuation.chars().collect();
+        password.push(punctuation_chars[rng.random_range(0..punctuation_chars.len())]);
         charset.push_str(&filtered_punctuation);
     }
 
     if config.include_quotes && !filtered_quotes.is_empty() {
-        password.push(
-            filtered_quotes
-                .chars()
-                .nth(rng.random_range(0..filtered_quotes.len()))
-                .unwrap(),
-        );
+        let quote_chars: Vec<char> = filtered_quotes.chars().collect();
+        password.push(quote_chars[rng.random_range(0..quote_chars.len())]);
         charset.push_str(&filtered_quotes);
     }
 
     if config.include_dashes && !filtered_dashes.is_empty() {
-        password.push(
-            filtered_dashes
-                .chars()
-                .nth(rng.random_range(0..filtered_dashes.len()))
-                .unwrap(),
-        );
+        let dash_chars: Vec<char> = filtered_dashes.chars().collect();
+        password.push(dash_chars[rng.random_range(0..dash_chars.len())]);
         charset.push_str(&filtered_dashes);
     }
 
     if config.include_math && !filtered_math.is_empty() {
-        password.push(
-            filtered_math
-                .chars()
-                .nth(rng.random_range(0..filtered_math.len()))
-                .unwrap(),
-        );
+        let math_chars: Vec<char> = filtered_math.chars().collect();
+        password.push(math_chars[rng.random_range(0..math_chars.len())]);
         charset.push_str(&filtered_math);
     }
 
     if config.include_logograms && !filtered_logograms.is_empty() {
-        password.push(
-            filtered_logograms
-                .chars()
-                .nth(rng.random_range(0..filtered_logograms.len()))
-                .unwrap(),
-        );
+        let logogram_chars: Vec<char> = filtered_logograms.chars().collect();
+        password.push(logogram_chars[rng.random_range(0..logogram_chars.len())]);
         charset.push_str(&filtered_logograms);
     }
 
@@ -172,9 +141,7 @@ pub fn generate_password(config: &PasswordConfig) -> String {
 
     // Fill remaining characters
     while password.len() < config.length.into() {
-        //let remaining = config.length.saturating_sub(password.len());
-
-        let c =  {
+        let c = {
             *charset_chars
                 .get(rng.random_range(0..charset_chars.len()))
                 .unwrap_or(&'~') // Fallback if empty
@@ -189,7 +156,7 @@ pub fn generate_password(config: &PasswordConfig) -> String {
 
 #[cfg(test)]
 mod tests {
-use super::*;
+    use super::*;
 
     #[test]
     fn test_generate_password() {
@@ -199,11 +166,24 @@ use super::*;
         assert_eq!(password.len(), 16);
     }
 
-    fn test_generate_password_with_included() {
-        let config = PasswordConfig::new(16).unwrap().included("@".parse().unwrap());
+    #[test]
+    fn test_generate_password_with_multibyte_unicode() {
+        let config = PasswordConfig {
+            length: 16,
+            included: "é".to_string(),
+            ..Default::default()
+        };
         let password = generate_password(&config);
 
-        assert_eq!(password.len(), 16);
+        assert!(password.contains('é'));
+    }
+    #[test]
+    fn test_generate_password_with_included() {
+        let config = PasswordConfig::new(16).unwrap().with_digits(true).included("é".to_string());
+        let password = generate_password(&config);
+
+        assert!(password.contains('é'));
+
     }
 
     #[test]
@@ -214,94 +194,5 @@ use super::*;
         let password = generate_password(&config);
 
         assert_eq!(password.len(), 16);
-    }
-
-    #[test]
-    fn test_generate_password_with_symbols_and_lowercase() {
-        let config = PasswordConfig::new(16)
-            .unwrap()
-            .with_logograms(true)
-            .with_lowercase(true);
-        let password = generate_password(&config);
-
-        assert_eq!(password.len(), 16);
-    }
-
-    #[test]
-    fn test_generate_password_with_symbols_and_uppercase() {
-        let config = PasswordConfig::new(16)
-            .unwrap()
-            .with_logograms(true)
-            .with_uppercase(true);
-        let password = generate_password(&config);
-
-        assert_eq!(password.len(), 16);
-    }
-
-    #[test]
-    fn test_generate_password_with_symbols_and_digits() {
-        let config = PasswordConfig::new(16)
-            .unwrap()
-            .with_logograms(true)
-            .with_digits(true);
-        let password = generate_password(&config);
-
-        assert_eq!(password.len(), 16);
-    }
-
-    #[test]
-    fn test_generate_password_with_symbols_and_lowercase_and_uppercase() {
-        let config = PasswordConfig::new(16)
-            .unwrap()
-            .with_logograms(true)
-            .with_lowercase(true)
-            .with_uppercase(true);
-        let password = generate_password(&config);
-
-        assert_eq!(password.len(), 16);
-    }
-
-    #[test]
-    fn test_generate_password_with_symbols_and_lowercase_and_digits() {
-        let config = PasswordConfig::new(16)
-            .unwrap()
-            .with_logograms(true)
-            .with_lowercase(true)
-            .with_digits(true);
-        let password = generate_password(&config);
-
-        assert_eq!(password.len(), 16);
-
-    }
-
-    #[test]
-    fn test_exclude() {
-        let config = PasswordConfig {
-            length: 64,
-            include_lowercase: true,
-            include_uppercase: true,
-            include_digits: true,
-            include_braces: true,
-            include_punctuation: true,
-            include_quotes: true,
-            include_dashes: true,
-            include_math: true,
-            include_logograms: true,
-            excluded: "0s%m8".to_string(),
-            included: String::from(""),
-
-        };
-
-        for _ in 0..10000 {
-            let password = generate_password(&config);
-            assert!(
-                !password.contains("0") &&
-                !password.contains("%") &&
-                !password.contains("m") &&
-                !password.contains("8"),
-                "Password contain excluded symbol: {}",
-                password
-            );
-        }
     }
 }

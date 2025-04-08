@@ -52,7 +52,7 @@ fn run() -> Result<()> {
         .with_math(opts.math)
         .with_logograms(opts.logograms)
         .excluded(opts.exclude().unwrap_or("".to_string()))
-        .included(opts.include().unwrap_or("@".to_string()));
+        .included(opts.include().unwrap_or("".to_string()));
 
     if !config.validate().is_ok(){
         return Err(eyre!("Invalid configuration. Please enter some options to generate a password"));

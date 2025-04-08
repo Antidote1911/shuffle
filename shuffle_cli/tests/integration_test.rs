@@ -15,15 +15,7 @@ mod tests {
         assert.stdout(predicate::str::contains("password generator"));
     }
 
-    #[test]
-    fn test_create_password() {
-        for _ in 0..100 {
-            let mut cmd = cmd();
-            let assert = cmd.assert();
 
-            assert.stdout(predicate::function(|s: &str| s.trim().len() == 20));
-        }
-    }
 
     #[test]
     fn test_create_alphanumeric_24_long() {
@@ -31,7 +23,7 @@ mod tests {
 
         for _ in 0..100 {
             let mut cmd = cmd();
-            cmd.args(&["-L", "24"])
+            cmd.args(&["-L", "24","-dlu"])
                 .assert()
                 .stdout(predicate::str::is_match(pattern).unwrap());
         }

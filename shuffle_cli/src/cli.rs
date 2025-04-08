@@ -19,7 +19,7 @@ pub struct Cli {
     pub(crate) lowercase: bool,
 
     /// Use digits [0-9]
-    #[clap(short, long, default_value = "true")]
+    #[clap(short, long)]
     pub(crate) digits: bool,
 
     /// Use special symbols [*&^%$#@!~]
@@ -42,7 +42,7 @@ pub struct Cli {
     pub(crate) logograms: bool,
 
     /// Sets the required password length
-    #[clap(short = 'L', long, value_name = "NUMBER", default_value = "5")]
+    #[clap(short = 'L', long, value_name = "NUMBER", default_value = "20")]
     length: usize,
 
     /// Output in a txt file
